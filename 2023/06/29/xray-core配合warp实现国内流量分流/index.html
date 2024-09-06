@@ -22,7 +22,7 @@
     <meta name="description" content="在上一篇blog的配置中，我对于国内流量是采用block的策略，但是这多多少少会带来一点不便，有时需要全局代理结果微信之类的就直接断网了。屏蔽回国流量的主要目的是为了隐藏自身，使xray从外部观察起来只是单纯的端口转发，而配合WARP就可以实现在损失一点点延迟的情况下顺利访问国内网站并隐藏自身。 为了使用WARP，我们首先使用wgcf这个非官方CLI来获取账号以及wireguard配置。 1234">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Xray-core配合WARP实现国内流量分流">
-<meta property="og:url" content="http://hexo.nekonya.one/2023/06/29/xray-core%E9%85%8D%E5%90%88warp%E5%AE%9E%E7%8E%B0%E5%9B%BD%E5%86%85%E6%B5%81%E9%87%8F%E5%88%86%E6%B5%81/index.html">
+<meta property="og:url" content="https://nekonya.one/2023/06/29/xray-core%E9%85%8D%E5%90%88warp%E5%AE%9E%E7%8E%B0%E5%9B%BD%E5%86%85%E6%B5%81%E9%87%8F%E5%88%86%E6%B5%81/index.html">
 <meta property="og:site_name" content="镜思">
 <meta property="og:description" content="在上一篇blog的配置中，我对于国内流量是采用block的策略，但是这多多少少会带来一点不便，有时需要全局代理结果微信之类的就直接断网了。屏蔽回国流量的主要目的是为了隐藏自身，使xray从外部观察起来只是单纯的端口转发，而配合WARP就可以实现在损失一点点延迟的情况下顺利访问国内网站并隐藏自身。 为了使用WARP，我们首先使用wgcf这个非官方CLI来获取账号以及wireguard配置。 1234">
 <meta property="og:locale" content="zh_CN">
@@ -79,7 +79,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"hexo.nekonya.one","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"nekonya.one","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -391,7 +391,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>Xray-core配合WARP实现国内流量分流</div>
-      <div>http://hexo.nekonya.one/2023/06/29/xray-core配合warp实现国内流量分流/</div>
+      <div>https://nekonya.one/2023/06/29/xray-core配合warp实现国内流量分流/</div>
     </div>
     <div class="license-meta">
       
