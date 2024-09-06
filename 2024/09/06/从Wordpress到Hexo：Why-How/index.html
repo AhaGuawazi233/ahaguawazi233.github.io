@@ -26,15 +26,14 @@
 <meta property="og:site_name" content="镜思">
 <meta property="og:description" content="经过一整天的查教程调配置，终于是把Hexo调成现在的模样，并把之前的文章一并导入了。趁着这个机会，记录一下我为什么要从Wordpress迁移到Hexo，以及我是如何迁移旧文章、配置Hexo到我自己的VPS的。 为什么要从Wordpress迁移到HexoWordpress几乎是世界上使用最广泛、可玩性最佳、可用性最好的博客了，但是我在使用的过程中还是遇到了一部分问题：  Wordpress的性能要求">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.5tqz06ftxl.webp">
-<meta property="og:image" content="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.1ovdo4abrs.webp">
+<meta property="og:image" content="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.4jo1ty9c8m.webp">
 <meta property="article:published_time" content="2024-09-06T15:06:54.000Z">
-<meta property="article:modified_time" content="2024-09-06T17:01:14.880Z">
+<meta property="article:modified_time" content="2024-09-06T17:14:36.332Z">
 <meta property="article:author" content="Guawazi233">
 <meta property="article:tag" content="Hexo">
 <meta property="article:tag" content="Wordpress">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.5tqz06ftxl.webp">
+<meta name="twitter:image" content="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.4jo1ty9c8m.webp">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -212,7 +211,7 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('https://AhaGuawazi233.github.io/picx-images-hosting/20240906/headpic.41y054n2ki.webp') no-repeat center center; background-size: cover;">
+     style="background: url('https://AhaGuawazi233.github.io/picx-images-hosting/20240906/90244316_p0.8hgfamlhy9.webp') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
@@ -241,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.4k 字
+          1.5k 字
         
       </span>
     
@@ -252,7 +251,7 @@
         
         
         
-          12 分钟
+          13 分钟
         
       </span>
     
@@ -358,7 +357,7 @@
 <p>（使用已有的公私钥，公钥上传相同，私钥仍是copy到本地.ssh文件夹中并改名，让git可以读取私钥）</p>
 <p>在服务器新建git仓库并配置hook</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> ~<br>git init --bare hexo.git<br>vim hexo.git/hooks/post-receive<br><span class="hljs-comment"># 输入 git --work-tree=/path/to/your/website --git-dir=/home/git/hexo.git checkout -f ，保存并退出</span><br></code></pre></td></tr></table></figure>
-<p><img src="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.1ovdo4abrs.webp" srcset="/img/loading.gif" lazyload alt="pic"></p>
+<p><img src="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.1ovdo4abrs.webp" srcset="/img/loading.gif" lazyload alt="post-receive"></p>
 <p>授予执行权限：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> +x ~/hexo.git/hooks/post-receive<br><span class="hljs-built_in">cd</span> ~<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chown</span> -R git:git /path/to/your/website<br><span class="hljs-comment"># 我是记得改文件夹所有者就行，万一不行就chmod 777吧哈哈哈哈哈</span><br></code></pre></td></tr></table></figure>
 
@@ -381,6 +380,10 @@
 <h2 id="配置nginx"><a href="#配置nginx" class="headerlink" title="配置nginx"></a>配置nginx</h2><p>有各种各样乱七八糟的方法配置nginx和SSL，像是宝塔面板、LNMP、以及纯手动部署……八仙过海各显神通，简单说明一下最紧要的部分吧</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs conf">server &#123;<br>    listen        80;<br>    listen   [::]:80;<br>    server_name  域名;<br><br>    rewrite ^(.*)$ https://$&#123;server_name&#125;$1 permanent;<br>&#125;<br><br>server &#123;<br>    listen  443 ssl;<br>    server_name  域名; <br><br>    ssl_certificate   存放pem的位置;<br>    ssl_certificate_key   存放key的位置;<br><br>    ssl_session_cache   shared:SSL:1m;<br>    ssl_session_timeout   5m;<br><br>    ssl_ciphers HIGH:!aNULL:!MD5;<br>    ssl_prefer_server_ciphers   on;<br>   <br>    # 以下是精华部分，本人使用lnmp，仅需在添加vhost后注释掉生成的配置文件中所有location块、注释掉原本的root和index， 并添加以下location块即可正常运行<br>    location / &#123;<br>        proxy_set_header   X-Real-IP        $remote_addr;<br>        proxy_set_header   Host             $http_host;<br>        proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;<br>        root   /path/to/your/website;<br>        index  index.html index.htm;<br>    &#125;<br>    # 以上是精华部分<br>    error_page   500 502 503 504  /50x.html;<br>    location = /50x.html &#123;<br>        root   /usr/share/nginx/html;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>然后reload一下nginx，没报错什么的话不出意外就可以正常访问了</p>
+<h2 id="从Wordpress迁移到Hexo"><a href="#从Wordpress迁移到Hexo" class="headerlink" title="从Wordpress迁移到Hexo"></a>从Wordpress迁移到Hexo</h2><p>进入Wordpress控制台，工具-&gt;导出，将导出内容下载到本地，使用迁移工具进行导入<br><img src="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.1zi7hb154s.webp" srcset="/img/loading.gif" lazyload alt="从Wordpress导出"></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">hexo migrate wordpress /path/to/your/wordpress-archive<br><span class="hljs-comment"># /path/to/your/wordpress-archive 可以是 WordPress 导出的文件路径或网址。</span><br></code></pre></td></tr></table></figure>
+<p>非常简单且无脑欸嘿</p>
+<p>以上就是我迁移并部署Hexo的过程了，UI美化等过程不在此赘述，希望能对你有些帮助</p>
 
                 
               </div>
