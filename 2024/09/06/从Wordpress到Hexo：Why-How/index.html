@@ -1,0 +1,808 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="https://AhaGuawazi233.github.io/picx-images-hosting/20240906/01.4g4fvurojt.webp">
+  <link rel="icon" href="https://AhaGuawazi233.github.io/picx-images-hosting/20240906/01.4g4fvurojt.webp">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guawazi233">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="经过一整天的查教程调配置，终于是把Hexo调成现在的模样，并把之前的文章一并导入了。趁着这个机会，记录一下我为什么要从Wordpress迁移到Hexo，以及我是如何迁移旧文章、配置Hexo到我自己的VPS的。 为什么要从Wordpress迁移到HexoWordpress几乎是世界上使用最广泛、可玩性最佳、可用性最好的博客了，但是我在使用的过程中还是遇到了一部分问题：  Wordpress的性能要求">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从Wordpress到Hexo：Why &amp; How">
+<meta property="og:url" content="https://nekonya.one/2024/09/06/%E4%BB%8EWordpress%E5%88%B0Hexo%EF%BC%9AWhy-How/index.html">
+<meta property="og:site_name" content="镜思">
+<meta property="og:description" content="经过一整天的查教程调配置，终于是把Hexo调成现在的模样，并把之前的文章一并导入了。趁着这个机会，记录一下我为什么要从Wordpress迁移到Hexo，以及我是如何迁移旧文章、配置Hexo到我自己的VPS的。 为什么要从Wordpress迁移到HexoWordpress几乎是世界上使用最广泛、可玩性最佳、可用性最好的博客了，但是我在使用的过程中还是遇到了一部分问题：  Wordpress的性能要求">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.5tqz06ftxl.webp">
+<meta property="og:image" content="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.1ovdo4abrs.webp">
+<meta property="article:published_time" content="2024-09-06T15:06:54.000Z">
+<meta property="article:modified_time" content="2024-09-06T17:01:14.880Z">
+<meta property="article:author" content="Guawazi233">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="Wordpress">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.5tqz06ftxl.webp">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>从Wordpress到Hexo：Why &amp; How - 镜思</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"nekonya.one","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>镜思</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://AhaGuawazi233.github.io/picx-images-hosting/20240906/headpic.41y054n2ki.webp') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="从Wordpress到Hexo：Why &amp; How"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-06 23:06" pubdate>
+          2024年9月6日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">从Wordpress到Hexo：Why &amp; How</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>经过一整天的查教程调配置，终于是把Hexo调成现在的模样，并把之前的文章一并导入了。趁着这个机会，记录一下我为什么要从Wordpress迁移到Hexo，以及我是如何迁移旧文章、配置Hexo到我自己的VPS的。</p>
+<h1 id="为什么要从Wordpress迁移到Hexo"><a href="#为什么要从Wordpress迁移到Hexo" class="headerlink" title="为什么要从Wordpress迁移到Hexo"></a>为什么要从Wordpress迁移到Hexo</h1><p>Wordpress几乎是世界上使用最广泛、可玩性最佳、可用性最好的博客了，但是我在使用的过程中还是遇到了一部分问题：</p>
+<ul>
+<li>Wordpress的性能要求太高了，我那1c1g的VPS带动这么一个博客实在是有点勉强，不能说不能用吧，总之是非常容易满负载，并且网站响应速度也不够令人满意</li>
+<li>Wordpress的后台操作复杂，插件多且杂，很多功能需要依赖插件实现，导致后台臃肿，而有很多功能我并不需要</li>
+<li>Wordpress的主题也令人不甚满意。大量主题并不符合我的审美，好不容易找到一个看得上的了，却又问题频发，时不时就得进入维护模式，最后我只能用回Wordpress原始的主题。</li>
+</ul>
+<p>上面这些问题令我越发觉得Wordpress并不适合作为我的博客，考虑到网站响应速度，决定一不做二不休直接改成静态的Hexo。</p>
+<h1 id="如何配置Hexo到自己的VPS上"><a href="#如何配置Hexo到自己的VPS上" class="headerlink" title="如何配置Hexo到自己的VPS上"></a>如何配置Hexo到自己的VPS上</h1><h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>Hexo作为一个静态博客，与我以往接触的Wordpress、Typecho等动态博客不同，它没有一个可视化的后台，所有操作都要通过CLI进行。还有一个更大的区别，就是Hexo一般只是deploy到服务器（或者github库）上，而没有一个直接的可执行文件安装到服务器上。大概来说是下述步骤：配置node.js -&gt; 安装Hexo -&gt; 配置git -&gt; 配置Hexo</p>
+<p><em>（以下过程为本地Windows 11 + 服务器Debian11）</em></p>
+<h3 id="配置node-js"><a href="#配置node-js" class="headerlink" title="配置node.js"></a>配置node.js</h3><p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">官网的文档</a>推荐使用nvs安装node.js。<br>打开“终端（管理员模式）”,使用winget来安装<a target="_blank" rel="noopener" href="https://github.com/jasongin/nvs">nvs</a>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">winget install jasongin.nvs<br></code></pre></td></tr></table></figure>
+<p>修改镜像地址为中科大源</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">nvs remote node https://mirrors.ustc.edu.cn/node/<br><span class="hljs-comment"># 查看修改是否成功</span><br><span class="hljs-comment"># nvs remote</span><br><span class="hljs-comment"># 修改成功则会有上述镜像站</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.5tqz06ftxl.webp" srcset="/img/loading.gif" lazyload alt="修改镜像源后"></p>
+<p>安装LTS版本</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">nvs add lts<br></code></pre></td></tr></table></figure>
+<p>然后运行nvs use命令将节点版本添加到当前 shell 的 PATH 中：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">nvs use lts<br></code></pre></td></tr></table></figure>
+<p><em>或者用 nvs link 命令永久添加到 PATH 中</em></p>
+<p>然后配置npm源：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npm config <span class="hljs-built_in">set</span> registry https://npmreg.proxy.ustclug.org/<br></code></pre></td></tr></table></figure>
+<p>至此node.js配置完成，如果重新开启shell了需要重新nvs use。</p>
+<h3 id="安装Hexo-1"><a href="#安装Hexo-1" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><p>使用npm安装Hexo。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npm install -g hexo-cli<br></code></pre></td></tr></table></figure>
+<p>同时安装接下来需要的模块：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">npm install hexo-deployer-git --save<br>npm install hexo-migrator-wordpress --save<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置git"><a href="#配置git" class="headerlink" title="配置git"></a>配置git</h3><p>本地安装git直接下载<a target="_blank" rel="noopener" href="https://git-scm.com/downloads">安装包</a>进行安装即可。</p>
+<p>服务器安装：<br>使用apt（centOS系使用yum）安装git：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">sudo</span> apt install git-all<br></code></pre></td></tr></table></figure>
+
+<p>创建git用户：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 依次执行</span><br>adduser git<br><br><span class="hljs-built_in">mkdir</span> /home/git<br><br><span class="hljs-built_in">sudo</span> passwd git<br></code></pre></td></tr></table></figure>
+
+<p>将git用户添加为sudoer:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">visudo<br></code></pre></td></tr></table></figure>
+
+<p>(或者看系统具体情况，像我的话是直接在&#x2F;etc&#x2F;sudoers.d里添加文件即可)</p>
+<p>在sudoer文件中添加以下配置：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">git <span class="hljs-keyword">ALL</span>=(<span class="hljs-keyword">ALL</span>) NOPASSWD:<span class="hljs-keyword">ALL</span><br></code></pre></td></tr></table></figure>
+
+<p>由于Hexo是使用git将本地的静态文件推送到服务器的git上，所以需要配置一下免密登录：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 切换到git用户</span><br>su git<br><br><span class="hljs-comment"># 创建.ssh文件夹存放公钥</span><br><span class="hljs-built_in">cd</span> ~<br><span class="hljs-built_in">mkdir</span> .ssh<br><br><span class="hljs-comment"># 接下来可以使用现有的密钥或者生成新的密钥，使用现有密钥的不再赘述，依样画葫芦即可</span><br></code></pre></td></tr></table></figure>
+
+<p>在本地计算机打开git Bash：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> ~<br><span class="hljs-built_in">cd</span> .ssh<br>ssh-keygen<br></code></pre></td></tr></table></figure>
+
+<p>按照程序提示完成，最后生成的公私钥存储在’C:\Users\ _你的用户名_\ .ssh’下</p>
+<p>将’id_rsa.pub’上传至服务器的’&#x2F;home&#x2F;git&#x2F;.ssh’目录下并执行以下命令：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> /home/git/.ssh<br><span class="hljs-built_in">cp</span> id_rsa.pub authorized_keys<br><br><span class="hljs-comment"># 设置权限</span><br><span class="hljs-built_in">chmod</span> 600 ~/.ssh/authorized_keys<br><span class="hljs-built_in">chmod</span> 700 ~/.ssh<br><br><span class="hljs-comment"># 确保 SSH 相关的文件和目录具有正确的 SELinux 安全标签</span><br>restorecon -Rv ~/.ssh<br></code></pre></td></tr></table></figure>
+<p>（使用已有的公私钥，公钥上传相同，私钥仍是copy到本地.ssh文件夹中并改名，让git可以读取私钥）</p>
+<p>在服务器新建git仓库并配置hook</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> ~<br>git init --bare hexo.git<br>vim hexo.git/hooks/post-receive<br><span class="hljs-comment"># 输入 git --work-tree=/path/to/your/website --git-dir=/home/git/hexo.git checkout -f ，保存并退出</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://ahaguawazi233.github.io/picx-images-hosting/20240906/image.1ovdo4abrs.webp" srcset="/img/loading.gif" lazyload alt="pic"></p>
+<p>授予执行权限：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> +x ~/hexo.git/hooks/post-receive<br><span class="hljs-built_in">cd</span> ~<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chown</span> -R git:git /path/to/your/website<br><span class="hljs-comment"># 我是记得改文件夹所有者就行，万一不行就chmod 777吧哈哈哈哈哈</span><br></code></pre></td></tr></table></figure>
+
+<p>配置本地git全局变量（在gitbash中执行）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">git config --global user.email <span class="hljs-string">&quot;xxxxx@xxx.com&quot;</span><br>git config --global user.name <span class="hljs-string">&quot;xxx&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>测试配置是否成功：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 在本地git Bash中，自行修改为自己服务器的IP</span><br>ssh -v git@xxx.xxx.xxx.xxx<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置Hexo"><a href="#配置Hexo" class="headerlink" title="配置Hexo"></a>配置Hexo</h3><p>在上述步骤完成之后，执行以下命令完成初始化</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">hexo init /path/to/your/folder<br><span class="hljs-built_in">cd</span> /path/to/your/folder<br>npm install<br><span class="hljs-comment"># 要是关了重开别忘了重新nvs use lts一下</span><br></code></pre></td></tr></table></figure>
+
+<p>修改’_config.yml’文件中的’deploy’部分</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-string">deploy：</span><br>    <span class="hljs-attr">type:</span> <span class="hljs-string">git</span><br>    <span class="hljs-attr">repo:</span> <span class="hljs-string">git@xxx.xxx.xxx.xxx:/home/git/hexo.git</span><br>    <span class="hljs-attr">branch:</span> <span class="hljs-string">master</span><br></code></pre></td></tr></table></figure>
+
+<p>然后在本地终端中执行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">hexo c<br>hexo g<br>hexo d<br></code></pre></td></tr></table></figure>
+
+<p>此时查看服务器网站目录可见静态文件，说明hexo部署成功</p>
+<h2 id="配置nginx"><a href="#配置nginx" class="headerlink" title="配置nginx"></a>配置nginx</h2><p>有各种各样乱七八糟的方法配置nginx和SSL，像是宝塔面板、LNMP、以及纯手动部署……八仙过海各显神通，简单说明一下最紧要的部分吧</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs conf">server &#123;<br>    listen        80;<br>    listen   [::]:80;<br>    server_name  域名;<br><br>    rewrite ^(.*)$ https://$&#123;server_name&#125;$1 permanent;<br>&#125;<br><br>server &#123;<br>    listen  443 ssl;<br>    server_name  域名; <br><br>    ssl_certificate   存放pem的位置;<br>    ssl_certificate_key   存放key的位置;<br><br>    ssl_session_cache   shared:SSL:1m;<br>    ssl_session_timeout   5m;<br><br>    ssl_ciphers HIGH:!aNULL:!MD5;<br>    ssl_prefer_server_ciphers   on;<br>   <br>    # 以下是精华部分，本人使用lnmp，仅需在添加vhost后注释掉生成的配置文件中所有location块、注释掉原本的root和index， 并添加以下location块即可正常运行<br>    location / &#123;<br>        proxy_set_header   X-Real-IP        $remote_addr;<br>        proxy_set_header   Host             $http_host;<br>        proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;<br>        root   /path/to/your/website;<br>        index  index.html index.htm;<br>    &#125;<br>    # 以上是精华部分<br>    error_page   500 502 503 504  /50x.html;<br>    location = /50x.html &#123;<br>        root   /usr/share/nginx/html;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>然后reload一下nginx，没报错什么的话不出意外就可以正常访问了</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%BB%99%E8%87%AA%E5%B7%B1%E5%86%99%E7%9A%84%E6%95%99%E7%A8%8B/" class="category-chain-item">给自己写的教程</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
+      
+        <a href="/tags/Wordpress/" class="print-no-link">#Wordpress</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>从Wordpress到Hexo：Why &amp; How</div>
+      <div>https://nekonya.one/2024/09/06/从Wordpress到Hexo：Why-How/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guawazi233</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年9月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/09/06/hello-world/" title="Hello Hexo">
+                        <span class="hidden-mobile">Hello Hexo</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.css')
+      Fluid.utils.createScript('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline.nekonya.one","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
