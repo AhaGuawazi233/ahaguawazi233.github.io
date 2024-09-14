@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>sublime-text破解技巧</title>
+    <link href="/2024/09/15/sublime-text%E7%A0%B4%E8%A7%A3%E6%8A%80%E5%B7%A7/"/>
+    <url>/2024/09/15/sublime-text%E7%A0%B4%E8%A7%A3%E6%8A%80%E5%B7%A7/</url>
+    
+    <content type="html"><![CDATA[<p>Sublime Text作为一款非常好用的文本编辑器，其售价确实是让我这个学生党却步。今晚更新了一下Sublime Text，直接给我之前的激活整没了，找了一小会才重新找到能用的破解方法，写个blog权当记录。</p><p>Sublime Text Version：4180</p><p>在下载安装好Sublime Text之后，找到sublime_text.exe这个本体，将其上传至<a href="https://hexed.it/">hexed.it</a>这个Hex编辑器。</p><p>然后在右侧，查找<code>80 79 05 00 0F 94 C2</code>，并将其替换为<code>C6 41 05 01 B2 00 90</code>。</p><p><img src="https://ahaguawazi233.github.io/picx-images-hosting/image.5j45iiv0vh.webp" alt="HEX编辑器，查找替换都在右侧"></p><p>回到原目录，将原本的sublime_text.exe删了（或者改成sublime_text.exe.bak权当备份）</p><p>回到编辑器，点击另存为，将修改后的exe文件命名为sublime_text.exe并取代原本的位置。这样就破解好了，打开sublime text会发现已经是激活状态了。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>给自己写的教程</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>sublime text</tag>
+      
+      <tag>破解</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Hexo Fluid访问统计：使用自建Umami实现</title>
     <link href="/2024/09/07/Fluid%E8%AE%BF%E9%97%AE%E7%BB%9F%E8%AE%A1%EF%BC%9A%E4%BD%BF%E7%94%A8%E8%87%AA%E5%BB%BAumami%E5%AE%9E%E7%8E%B0/"/>
     <url>/2024/09/07/Fluid%E8%AE%BF%E9%97%AE%E7%BB%9F%E8%AE%A1%EF%BC%9A%E4%BD%BF%E7%94%A8%E8%87%AA%E5%BB%BAumami%E5%AE%9E%E7%8E%B0/</url>
