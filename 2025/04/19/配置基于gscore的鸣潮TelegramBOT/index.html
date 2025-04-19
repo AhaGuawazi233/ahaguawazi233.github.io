@@ -30,7 +30,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://nekonya.one/picx-images-hosting/20250419/1745051489562.2vextr31jc.webp">
 <meta property="article:published_time" content="2025-04-19T06:54:14.000Z">
-<meta property="article:modified_time" content="2025-04-19T08:36:28.343Z">
+<meta property="article:modified_time" content="2025-04-19T08:43:22.758Z">
 <meta property="article:author" content="Guawazi233">
 <meta property="article:tag" content="Debian">
 <meta property="article:tag" content="WutheringWave">
@@ -235,7 +235,7 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('https://nekonya.one/picx-images-hosting/20250419/128635897_p0.54xyd8n3qc.webp') no-repeat center center; background-size: cover;">
+     style="background: url('https://nekonya.one/picx-images-hosting/20250419/1745051489562.2vextr31jc.webp') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
@@ -264,7 +264,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.9k 字
+          1.7k 字
         
       </span>
     
@@ -275,7 +275,7 @@
         
         
         
-          16 分钟
+          14 分钟
         
       </span>
     
@@ -331,24 +331,27 @@
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">git <span class="hljs-built_in">clone</span> https://github.com/Genshin-bots/gsuid_core.git --depth=1 --single-branch<br><span class="hljs-comment">#然后进入文件夹</span><br><span class="hljs-built_in">cd</span> gsuid_core<br></code></pre></td></tr></table></figure>
 
 <h2 id="启动Docker-Compose"><a href="#启动Docker-Compose" class="headerlink" title="启动Docker Compose"></a>启动Docker Compose</h2><blockquote>
-<p>只要是近期安装的docker应该都是使用<code>docker compose</code>命令吧，旧版请自行替换为<code>docker-compose</code><br>先修改一下docker compose文件吧，不知道作者出于什么目的修改了端口。</p>
+<p>只要是近期安装的docker应该都是使用<code>docker compose</code>命令吧，旧版请自行替换为<code>docker-compose</code></p>
 </blockquote>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs sh">services:<br>  gsuid-core:<br>    build:<br>      context: .<br>      <span class="hljs-comment"># 指定要使用的镜像构建文件</span><br>      <span class="hljs-comment"># Dockerfile = 原软件源（连到国外服务器，适用 Github CI/CD 或 Docker Hub 等外网环境）</span><br>      <span class="hljs-comment"># Dockerfile.cn = 国内镜像源（使用国内镜像源，适用于自己或国内服务器构建）</span><br>      dockerfile: Dockerfile.cn<br>    container_name: gsuidcore<br>    privileged: <span class="hljs-literal">true</span><br>    restart: unless-stopped<br>    environment:<br>      <span class="hljs-comment"># TZ = 时区设置，可选参数，默认为 Asia/Shanghai</span><br>      <span class="hljs-comment"># GSCORE_HOST = 服务监听地址 (0.0.0.0 = 监听全部地址，启动容器可直接进后台) 可选参数，默认 locaohost (只允许容器内本地访问)</span><br>      - TZ=Asia/Shanghai<br>      - GSCORE_HOST=0.0.0.0<br>    ports:<br>      <span class="hljs-comment"># 端口映射，可自由修改，以下为：容器（core 中配置）8765 对应外部的 18765 端口</span><br>      <span class="hljs-comment"># 改的就是这里！！！上面是本来的，我改回8765端口了</span><br>      - 8765:8765<br>    volumes:<br>      <span class="hljs-comment"># 仅映射需要的文件夹，避免数据冲突</span><br>      <span class="hljs-comment"># 如需访问项目根目录，需要通过 docker exec -it &lt;容器id&gt; bash 进入容器内部</span><br>      <span class="hljs-comment"># 进入后默认的 /gsuid_core 即为插件根目录，路径与文档路径保持一致</span><br>      - /opt/gscore_data:/gsuid_core/data<br>      - /opt/gscore_plugins:/gsuid_core/gsuid_core/plugins<br></code></pre></td></tr></table></figure>
+<p>先修改一下docker compose文件吧，不知道作者出于什么目的修改了端口。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">.....<br>    ports:<br>      <span class="hljs-comment"># 改的就是这里！！！本来是18765，我改回8765端口了</span><br>      - 8765:8765<br>......<br></code></pre></td></tr></table></figure>
 <p>然后先启动一下</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 初次安装，执行以下指令：</span><br>docker compose up -d --build<br><span class="hljs-comment"># 试着打开http://IP:8765/genshinuid, 可以打开的话说明docker启动成功了</span><br></code></pre></td></tr></table></figure>
 <p>记得先修改一下用户密码，默认账户密码是<code>root/root</code>，在左边栏寻找用户管理以修改密码</p>
 <h2 id="配置master"><a href="#配置master" class="headerlink" title="配置master"></a>配置master</h2><p>GsCore还有一份无法在网页设置的config，设置好master之后才能直接在机器人用命令安装插件。</p>
 <blockquote>
-<p><code>config.json</code>文件位于<code>opt/gsuid_core_data/config.json</code><br>先到<a target="_blank" rel="noopener" href="https://t.me/userinfobot">UserInfoBot</a>获取自己的账号ID。<br>用<code>nano</code>或者<code>vim</code>打开<code>config.json</code>文件之后，配置如下部分</p>
+<p><code>config.json</code>文件位于<code>opt/gsuid_core_data/config.json</code></p>
 </blockquote>
+<p>先到<a target="_blank" rel="noopener" href="https://t.me/userinfobot">UserInfoBot</a>获取自己的账号ID。<br>用<code>nano</code>或者<code>vim</code>打开<code>config.json</code>文件之后，配置如下部分</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-string">&quot;masters&quot;</span>: [<br>   <span class="hljs-string">&quot;&lt;你的ID&gt;&quot;</span> // master权限账号, 类型为List[string], 对应权限pm=0。<br> ],<br></code></pre></td></tr></table></figure>
 <p>其他的可以不管，以后用到了再了解。<br>然后别忘了重启一下docker compose让配置生效</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 先回到gsuid_core文件夹再执行</span><br>docker compose down<br><span class="hljs-comment"># 除了第一次启动之外以后都不需要带--build参数</span><br>docker compose up -d<br></code></pre></td></tr></table></figure>
 
 <h1 id="配置nonebot"><a href="#配置nonebot" class="headerlink" title="配置nonebot"></a>配置nonebot</h1><p>目前各类Q群机器人（当然我们是要部署到tgbot上）以我的理解大致分为三层。<br>最上层就是我们刚刚配置好的Gscore，这部分负责具体的数据获得与处理。然后是中间层，负责沟通最上层与最下层。最下层就是具体负责发送消息的部分。</p>
 <blockquote>
-<p>小吐槽：因为目前生态都是基于各类土法QQ机器人的，显得尤为屎山代码。。。虽然说这样模块化的设计倒也不是没有意义就是。但是完全可以由Gscore直接对接某个符合例如onebotV12标准（尽可能通用化的标准，目前我的了解只有onebotV12）的Bot，省去中间层，变得更加轻量化而易于部署<br>所以这部分要配置的NoneBot就属于中间层的部分</p>
+<p>小吐槽：因为目前生态都是基于各类土法QQ机器人的，显得尤为屎山代码。。。虽然说这样模块化的设计倒也不是没有意义就是。但是完全可以由Gscore直接对接某个符合例如onebotV12标准（尽可能通用化的标准，目前我的了解只有onebotV12）的Bot，省去中间层，变得更加轻量化而易于部署</p>
 </blockquote>
+<p>所以这部分要配置的NoneBot就属于中间层的部分</p>
 <h2 id="安装nonebot"><a href="#安装nonebot" class="headerlink" title="安装nonebot"></a>安装nonebot</h2><p>nonebot我没找到可以直接用docker的，所以直接部署到本机了<br>首先确认Python版本&gt;&#x3D;3.9，并且官方文档也强烈建议使用虚拟环境<br>作为一个标准懒狗，安装什么的肯定都是让<code>apt</code>代劳啦。以后遇到问题了再研究吧。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 如果没安装python的话，用apt安装</span><br><span class="hljs-comment"># apt install python3</span><br><span class="hljs-comment"># 然后就需要安装pipx。pipx能自动使用虚拟环境安装各种程序，相较pip更加方便。</span><br>apt install pipx<br>pipx ensurepath<br><span class="hljs-comment"># 安装完成之后重新连接一下ssh让环境变量生效</span><br></code></pre></td></tr></table></figure>
 <p>然后安装nb脚手架</p>
