@@ -1,0 +1,777 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="https://AhaGuawazi233.github.io/picx-images-hosting/20240906/01.4g4fvurojt.webp">
+  <link rel="icon" href="https://AhaGuawazi233.github.io/picx-images-hosting/20240906/01.4g4fvurojt.webp">
+  
+    <link rel="canonical" href="https://nekonya.one/2026/01/12/本地部署CosyVoice与GLM-TTS/"/>
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Guawazi233">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="环境背景：本文基于 WSL2 (Debian 11) 环境，硬件配置为 RTX 3060 Laptop。适用于需要本地化部署 TTS（从文本到语音）大模型的开发者。 前置准备：CUDA 环境配置在 WSL2 中，显卡驱动由 Windows 宿主机共享，我们只需在 Linux 子系统中安装开发套件。 1. Windows 端驱动请确保 Windows 已安装最新 NVIDIA 驱动。WSL2 会自动">
+<meta property="og:type" content="article">
+<meta property="og:title" content="本地部署 CosyVoice 与 GLM-TTS 语音大模型实战指南">
+<meta property="og:url" content="https://nekonya.one/2026/01/12/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2CosyVoice%E4%B8%8EGLM-TTS/index.html">
+<meta property="og:site_name" content="镜思">
+<meta property="og:description" content="环境背景：本文基于 WSL2 (Debian 11) 环境，硬件配置为 RTX 3060 Laptop。适用于需要本地化部署 TTS（从文本到语音）大模型的开发者。 前置准备：CUDA 环境配置在 WSL2 中，显卡驱动由 Windows 宿主机共享，我们只需在 Linux 子系统中安装开发套件。 1. Windows 端驱动请确保 Windows 已安装最新 NVIDIA 驱动。WSL2 会自动">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://nekonya.one/picx-images-hosting/20250422/1745295450169.7lk6w75pcm.webp">
+<meta property="article:published_time" content="2026-01-12T14:58:52.000Z">
+<meta property="article:modified_time" content="2026-01-12T15:57:40.909Z">
+<meta property="article:author" content="Guawazi233">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="TTS">
+<meta property="article:tag" content="本地部署">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://nekonya.one/picx-images-hosting/20250422/1745295450169.7lk6w75pcm.webp">
+  
+  
+  
+  <title>本地部署 CosyVoice 与 GLM-TTS 语音大模型实战指南 - 镜思</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"nekonya.one","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":false,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":"https://umami.nekonya.one/script.js","website_id":"07eec272-3306-4bfb-8fa7-5eff69e27f41","domains":null,"start_time":"2024-09-06T00:00:00.000Z","token":"UkdGSlKictd6Dd82tz0DOzsBGKyxwfhwFLCo0zOJC7esPvvaj1+C4Hx3QZXCIPVmUMV/RTXhLsXVBAGqaELu348TyAeRI7dxgXQ3coyFj2d7Yl6HL0ceDoRD8dQ6185bs6Zw8U0zb0wFXlCJRvTGX9N+Ph7Dc62oR3I0ngcFaDBXSeOZiMkCokmvUd2qXP7xs6Z+dAQPfF4OPXcrjnJH+qbGxucQfR/HHW7KhspMyUroeB+/qt/xxupv2G++ACoO8brmh/9KP99cQ5sXlsIshPK0PKzWm+38ieQ9T4NU5TuDB1XprQ5jEsj8hIpSD58l9g9xeMp7QSHlFHnOn0sua5Wf334mfPTUpE1osMl7pstOU9LVxRRQpMyW9WmVqSoyH/Ck","api_server":"https://umami.nekonya.one"}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        let umami = document.createElement('script');
+        umami.async = true;
+        umami.src = "https://umami.nekonya.one/script.js";
+        umami.setAttribute("data-website-id", "07eec272-3306-4bfb-8fa7-5eff69e27f41");
+        umami.setAttribute("data-domains", "");
+        document.head.appendChild(umami);
+      }
+    </script>
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>镜思</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('https://nekonya.one/picx-images-hosting/20250422/1745295483354.7zqmn2e0af.webp') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="本地部署 CosyVoice 与 GLM-TTS 语音大模型实战指南"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-12 22:58" pubdate>
+          2026年1月12日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="umami-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="umami-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">本地部署 CosyVoice 与 GLM-TTS 语音大模型实战指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>环境背景：本文基于 WSL2 (Debian 11) 环境，硬件配置为 RTX 3060 Laptop。适用于需要本地化部署 TTS（从文本到语音）大模型的开发者。</p>
+<h1 id="前置准备：CUDA-环境配置"><a href="#前置准备：CUDA-环境配置" class="headerlink" title="前置准备：CUDA 环境配置"></a>前置准备：CUDA 环境配置</h1><p>在 WSL2 中，显卡驱动由 Windows 宿主机共享，我们只需在 Linux 子系统中安装开发套件。</p>
+<h2 id="1-Windows-端驱动"><a href="#1-Windows-端驱动" class="headerlink" title="1. Windows 端驱动"></a>1. Windows 端驱动</h2><p>请确保 Windows 已安装最新 NVIDIA 驱动。WSL2 会自动映射 GPU 硬件，严禁在 WSL2 内部尝试安装显卡驱动。</p>
+<h2 id="2-WSL2-运行环境安装-CUDA-Toolkit"><a href="#2-WSL2-运行环境安装-CUDA-Toolkit" class="headerlink" title="2. WSL2 运行环境安装 (CUDA Toolkit)"></a>2. WSL2 运行环境安装 (CUDA Toolkit)</h2><p>使用<code>nvidia-smi</code>在右上角确认适用的CUDA版本，并将下面的版本适当进行替换。<br>执行以下命令安装 CUDA 13.1（适用于 Debian&#x2F;Ubuntu 系）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-keyring_1.1-1_all.deb<br><span class="hljs-built_in">sudo</span> dpkg -i cuda-keyring_1.1-1_all.deb<br><span class="hljs-built_in">sudo</span> apt-get update<br><span class="hljs-built_in">sudo</span> apt-get -y install cuda-toolkit-13-1 <span class="hljs-comment">#如果是12.8的话，那就是sudo apt-get -y install cuda-toolkit-12-8</span><br></code></pre></td></tr></table></figure>
+<p>验证安装：<br>输入<code>nvcc -V</code>，若显示版本信息，则 CUDA 环境配置成功。</p>
+<h1 id="CosyVoice本地安装"><a href="#CosyVoice本地安装" class="headerlink" title="CosyVoice本地安装"></a>CosyVoice本地安装</h1><h2 id="克隆git库"><a href="#克隆git库" class="headerlink" title="克隆git库"></a>克隆git库</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">git <span class="hljs-built_in">clone</span> --recursive https://github.com/FunAudioLLM/CosyVoice.git<br><span class="hljs-comment"># 克隆成功后再执行后续命令，如果由于网络因素克隆失败的话，可以自行查找Github代理加速网站</span><br><span class="hljs-built_in">cd</span> CosyVoice<br>git submodule update --init --recursive<br></code></pre></td></tr></table></figure>
+<p>由于依赖管理的需要，接下来需要用到Conda，安装参考<a target="_blank" rel="noopener" href="https://www.anaconda.com/docs/getting-started/miniconda/main">这里</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">conda create -n cosyvoice -y python=3.10 <span class="hljs-comment">#创建conda虚拟环境</span><br>conda activate cosyvoice <span class="hljs-comment">#激活虚拟环境</span><br>pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com <span class="hljs-comment">#通过阿里云镜像安装依赖</span><br><br><span class="hljs-comment"># If you encounter sox compatibility issues</span><br><span class="hljs-comment"># ubuntu</span><br><span class="hljs-built_in">sudo</span> apt-get install sox libsox-dev<br></code></pre></td></tr></table></figure>
+
+<h2 id="下载模型"><a href="#下载模型" class="headerlink" title="下载模型"></a>下载模型</h2><p>在克隆好git库之后就需要下载要用到的模型了。经过测试，发现<code>Fun-CosyVoice3-0.5B</code>存在疑似分词问题，会把部分prompt内容输出到输出音频内，建议使用<code>CosyVoice2-0.5B</code>等旧版本模型。其中<code>CosyVoice-300M-SFT</code>模型具有预训练音色，可以直接调用并生成音频，其他模型（<code>CosyVoice2-0.5B</code>）需要准备模板音频（时长大于3s，小于30s）进行Zero-shot text-to-speech generation。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">nano install-model.py <span class="hljs-comment">#用nano编辑器写个脚本来安装</span><br></code></pre></td></tr></table></figure>
+<p>将以下内容黏贴进<code>install-model.py</code>中</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> modelscope <span class="hljs-keyword">import</span> snapshot_download<br>snapshot_download(<span class="hljs-string">&#x27;FunAudioLLM/Fun-CosyVoice3-0.5B-2512&#x27;</span>, local_dir=<span class="hljs-string">&#x27;pretrained_models/Fun-CosyVoice3-0.5B&#x27;</span>)<br>snapshot_download(<span class="hljs-string">&#x27;iic/CosyVoice2-0.5B&#x27;</span>, local_dir=<span class="hljs-string">&#x27;pretrained_models/CosyVoice2-0.5B&#x27;</span>)<br>snapshot_download(<span class="hljs-string">&#x27;iic/CosyVoice-300M&#x27;</span>, local_dir=<span class="hljs-string">&#x27;pretrained_models/CosyVoice-300M&#x27;</span>)<br>snapshot_download(<span class="hljs-string">&#x27;iic/CosyVoice-300M-SFT&#x27;</span>, local_dir=<span class="hljs-string">&#x27;pretrained_models/CosyVoice-300M-SFT&#x27;</span>)<br>snapshot_download(<span class="hljs-string">&#x27;iic/CosyVoice-300M-Instruct&#x27;</span>, local_dir=<span class="hljs-string">&#x27;pretrained_models/CosyVoice-300M-Instruct&#x27;</span>)<br>snapshot_download(<span class="hljs-string">&#x27;iic/CosyVoice-ttsfrd&#x27;</span>, local_dir=<span class="hljs-string">&#x27;pretrained_models/CosyVoice-ttsfrd&#x27;</span>)<br></code></pre></td></tr></table></figure>
+<p>这是官方推荐安装的<code>Fun-CosyVoice3-0.5B</code> <code>CosyVoice2-0.5B</code> <code>CosyVoice-300M </code> <code>CosyVoice-300M-SFT</code> <code>CosyVoice-300M-Instruct</code>预训练模型以及<code>CosyVoice-ttsfrd</code>资源。</p>
+<h2 id="启动webui"><a href="#启动webui" class="headerlink" title="启动webui"></a>启动webui</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">python3 webui.py --port 50000 --model_dir path/to/model <span class="hljs-comment">#将地址改成对应模型地址即可更改使用的模型，如下</span><br>python3 webui.py --port 50000 --model_dir pretrained_models/CosyVoice2-0.5B<br></code></pre></td></tr></table></figure>
+<p>在WSL使用mirror网络模式且启用localhost转发的情况下，可以在浏览器通过访问<code>127.0.0.1:50000</code>来访问webui。<br>对于<code>CosyVoice2-0.5B</code>模型，由于不存在预训练音色，需要准备一段模板音频（大于3s小于30s）以及音频对应的文本（例如我准备的是普通话水平测试的示范音频及对应的文本），推理模式选择<code>3s急速复刻</code>，流式推理选择<code>否</code>，将prompt音频以及文本丢进去，输入合成文本，点击生成。稍作等待即可生成对应音频。<br>对于<code>CosyVoice-300M-SFT</code>模型，可以使用预训练音色模式，选择喜欢的音色并输入合成文本，点击<code>生成音频</code>进行生成。</p>
+<h1 id="GLM-TTS本地安装"><a href="#GLM-TTS本地安装" class="headerlink" title="GLM-TTS本地安装"></a>GLM-TTS本地安装</h1><h2 id="克隆git库-1"><a href="#克隆git库-1" class="headerlink" title="克隆git库"></a>克隆git库</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sh">git <span class="hljs-built_in">clone</span> https://github.com/zai-org/GLM-TTS.git<br><span class="hljs-built_in">cd</span> GLM-TTS<br>conda create -n glm-tts -y python=3.11<br>conda activate glm-tts<br>pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host=mirrors.aliyun.com <span class="hljs-comment">#通过阿里云镜像安装依赖</span><br></code></pre></td></tr></table></figure>
+<p>如果安装依赖过程报错，显示冲突的话，将requirements.txt改成如下内容</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br></pre></td><td class="code"><pre><code class="hljs abnf"><span class="hljs-attribute">accelerate</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.12</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">aiofiles</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">24.1</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">aiohappyeyeballs</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.6</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">aiohttp</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.13</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">aiosignal</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.4</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">aliyun-python-sdk-core</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.16</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">aliyun-python-sdk-kms</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.16</span>.<span class="hljs-number">5</span><br><span class="hljs-attribute">annotated-doc</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.0</span>.<span class="hljs-number">4</span><br><span class="hljs-attribute">annotated-types</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.7</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">antlr4-python3-runtime</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.9</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">anyascii</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.3</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">anyio</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.11</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">async-timeout</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">5.0</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">audioread</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.1</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">brotli</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.2</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">certifi</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2025.11</span>.<span class="hljs-number">12</span><br><span class="hljs-attribute">cffi</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.0</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">charset-normalizer</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.4</span>.<span class="hljs-number">4</span><br><span class="hljs-attribute">click</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">8.3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">cmudict</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.1</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">coloredlogs</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">15.0</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">contourpy</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.3</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">contractions</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.1</span>.<span class="hljs-number">73</span><br><span class="hljs-attribute">crcmod</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.7</span><br><span class="hljs-attribute">cryptography</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">46.0</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">cycler</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.12</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">debugpy</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.8</span>.<span class="hljs-number">18</span><br><span class="hljs-attribute">decorator</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">5.2</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">deepspeed</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.18</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">distro</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.9</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">editdistance</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.8</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">einops</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.8</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">einx</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.3</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">emoji</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.15</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">evaluation</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.0</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">exceptiongroup</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.3</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">fastapi</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.124</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">ffmpy</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.0</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">filelock</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.20</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">flatbuffers</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">25.9</span>.<span class="hljs-number">23</span><br><span class="hljs-attribute">fonttools</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.61</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">frozendict</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.4</span>.<span class="hljs-number">7</span><br><span class="hljs-attribute">frozenlist</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.8</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">fschat</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.2</span>.<span class="hljs-number">36</span><br><span class="hljs-attribute">fsspec</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2025.12</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">funasr</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.2</span>.<span class="hljs-number">7</span><br><span class="hljs-attribute">gitdb</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.0</span>.<span class="hljs-number">12</span><br><span class="hljs-attribute">GitPython</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.1</span>.<span class="hljs-number">45</span><br><span class="hljs-attribute">glog</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">gradio</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">6.1</span>.<span class="hljs-number">0</span><br>gradio_client<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.0</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">groovy</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.1</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">h11</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.16</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">hf-xet</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.1</span>.<span class="hljs-number">10</span><br><span class="hljs-attribute">hjson</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.1</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">httpcore</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.0</span>.<span class="hljs-number">9</span><br><span class="hljs-attribute">httptools</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.7</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">httpx</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.28</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">huggingface-hub</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.35</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">humanfriendly</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">10.0</span><br><span class="hljs-attribute">hydra-core</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.3</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">HyperPyYAML</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.2</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">idna</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.11</span><br>importlib_metadata<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">8.7</span>.<span class="hljs-number">0</span><br>importlib_resources<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">6.5</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">inflect</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">7.5</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">iniconfig</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.3</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">jaconv</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.4</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">jamo</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.4</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">jieba</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.42</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">Jinja2</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.1</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">jiter</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.11</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">jiwer</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.0</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">jmespath</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.10</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">joblib</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.5</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">kaldiio</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.18</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">kiwisolver</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.4</span>.<span class="hljs-number">9</span><br><span class="hljs-attribute">latex2mathml</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.78</span>.<span class="hljs-number">1</span><br>lazy_loader<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.4</span><br><span class="hljs-attribute">librosa</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.11</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">llvmlite</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.46</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">loguru</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.7</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">markdown-it-py</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.0</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">markdown2</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.5</span>.<span class="hljs-number">4</span><br><span class="hljs-attribute">MarkupSafe</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.1</span>.<span class="hljs-number">5</span><br><span class="hljs-attribute">matplotlib</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.10</span>.<span class="hljs-number">8</span><br><span class="hljs-attribute">mdurl</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.1</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">modelscope</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.33</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">more-itertools</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">10.8</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">mpmath</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.3</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">msgpack</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.1</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">multidict</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">6.7</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">multiprocess</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.70</span>.<span class="hljs-number">16</span><br><span class="hljs-attribute">networkx</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.4</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">nh3</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">ninja</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.13</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">numba</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.63</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">numpy</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.26</span>.<span class="hljs-number">4</span><br><span class="hljs-attribute">nvidia-cublas-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">12.8</span>.<span class="hljs-number">4.1</span><br><span class="hljs-attribute">nvidia-cuda-cupti-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">12.8</span>.<span class="hljs-number">90</span><br><span class="hljs-attribute">nvidia-cuda-nvrtc-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">12.8</span>.<span class="hljs-number">93</span><br><span class="hljs-attribute">nvidia-cuda-runtime-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">12.8</span>.<span class="hljs-number">90</span><br><span class="hljs-attribute">nvidia-cudnn-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">9.10</span>.<span class="hljs-number">2.21</span><br><span class="hljs-attribute">nvidia-cufft-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">11.3</span>.<span class="hljs-number">3.83</span><br><span class="hljs-attribute">nvidia-cufile-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.13</span>.<span class="hljs-number">1.3</span><br><span class="hljs-attribute">nvidia-curand-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">10.3</span>.<span class="hljs-number">9.90</span><br><span class="hljs-attribute">nvidia-cusolver-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">11.7</span>.<span class="hljs-number">3.90</span><br><span class="hljs-attribute">nvidia-cusparse-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">12.5</span>.<span class="hljs-number">8.93</span><br><span class="hljs-attribute">nvidia-cusparselt-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.7</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">nvidia-nccl-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.27</span>.<span class="hljs-number">5</span><br><span class="hljs-attribute">nvidia-nvjitlink-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">12.8</span>.<span class="hljs-number">93</span><br><span class="hljs-attribute">nvidia-nvshmem-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.3</span>.<span class="hljs-number">20</span><br><span class="hljs-attribute">nvidia-nvtx-cu12</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">12.8</span>.<span class="hljs-number">90</span><br><span class="hljs-attribute">omegaconf</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.3</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">onnxruntime-gpu</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.19</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">openai</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.6</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">openai-whisper</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">20250625</span><br><span class="hljs-attribute">orjson</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.11</span>.<span class="hljs-number">5</span><br><span class="hljs-attribute">oss2</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.19</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">packaging</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">25.0</span><br><span class="hljs-attribute">pandas</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.3</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">peft</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.18</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">pillow</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">12.0</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">platformdirs</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.5</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">pluggy</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.6</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">pooch</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.8</span>.<span class="hljs-number">2</span><br>prompt_toolkit<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.0</span>.<span class="hljs-number">52</span><br><span class="hljs-attribute">pronouncing</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.2</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">propcache</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.4</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">protobuf</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">6.33</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">psutil</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">7.1</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">py-cpuinfo</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">9.0</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">pyahocorasick</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.2</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">pyarrow</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">21.0</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">pycparser</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.23</span><br><span class="hljs-attribute">pycryptodome</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.23</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">pydantic</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.12</span>.<span class="hljs-number">4</span><br>pydantic_core<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.41</span>.<span class="hljs-number">5</span><br><span class="hljs-attribute">pydub</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.25</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">Pygments</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.19</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">pynini</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.1</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">pynndescent</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.5</span>.<span class="hljs-number">13</span><br><span class="hljs-attribute">pyparsing</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.2</span>.<span class="hljs-number">5</span><br><span class="hljs-attribute">pypinyin</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.55</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">pytest</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">8.4</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">python-dateutil</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.9</span>.<span class="hljs-number">0</span>.post0<br><span class="hljs-attribute">python-dotenv</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.1</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">python-gflags</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.1</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">python-multipart</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.0</span>.<span class="hljs-number">20</span><br><span class="hljs-attribute">pytorch-wpe</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.0</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">pytz</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2025.2</span><br><span class="hljs-attribute">PyYAML</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">6.0</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">RapidFuzz</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.14</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">regex</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2025.11</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">requests</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.32</span>.<span class="hljs-number">5</span><br><span class="hljs-attribute">rich</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">14.2</span>.<span class="hljs-number">0</span><br>ruamel.yaml<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.18</span>.<span class="hljs-number">16</span><br>ruamel.yaml.clib<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.2</span>.<span class="hljs-number">15</span><br><span class="hljs-attribute">safehttpx</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.1</span>.<span class="hljs-number">7</span><br><span class="hljs-attribute">safetensors</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.7</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">scikit-learn</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.7</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">scipy</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.15</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">semantic-version</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.10</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">sentencepiece</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.2</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">sentry-sdk</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.47</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">shellingham</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.5</span>.<span class="hljs-number">4</span><br><span class="hljs-attribute">shortuuid</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.0</span>.<span class="hljs-number">13</span><br><span class="hljs-attribute">six</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.17</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">smmap</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">5.0</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">sniffio</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">soundfile</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.13</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">soxr</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.0</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">starlette</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.48</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">svgwrite</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.4</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">sympy</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.14</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">tensorboardX</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.6</span>.<span class="hljs-number">4</span><br><span class="hljs-attribute">textsearch</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.0</span>.<span class="hljs-number">24</span><br><span class="hljs-attribute">threadpoolctl</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.6</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">tiktoken</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.12</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">tokenizers</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.22</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">tomli</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.3</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">tomlkit</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.13</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">torch</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.9</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">torch-complex</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.4</span>.<span class="hljs-number">4</span><br><span class="hljs-attribute">torchaudio</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.9</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">torchcodec</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.9</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">torchvision</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.24</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">tqdm</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.67</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">train</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.0</span>.<span class="hljs-number">5</span><br><span class="hljs-attribute">transformers</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.57</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">triton</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.5</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">typeguard</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.4</span>.<span class="hljs-number">4</span><br><span class="hljs-attribute">typer</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.20</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">typing-inspection</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.4</span>.<span class="hljs-number">2</span><br>typing_extensions<span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">4.15</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">tzdata</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2025.2</span><br><span class="hljs-attribute">umap-learn</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.5</span>.<span class="hljs-number">9</span>.post2<br><span class="hljs-attribute">urllib3</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.6</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">uvicorn</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.38</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">uvloop</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.22</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">wandb</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.23</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">watchfiles</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.1</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">wavedrom</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.0</span>.<span class="hljs-number">3</span>.post3<br><span class="hljs-attribute">wcwidth</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">0.2</span>.<span class="hljs-number">14</span><br><span class="hljs-attribute">websockets</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">15.0</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">WeTextProcessing</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.0</span>.<span class="hljs-number">4.1</span><br><span class="hljs-attribute">x-transformers</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.11</span>.<span class="hljs-number">23</span><br><span class="hljs-attribute">xxhash</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.6</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">yarl</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.22</span>.<span class="hljs-number">0</span><br><span class="hljs-attribute">zhconv</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">1.4</span>.<span class="hljs-number">3</span><br><span class="hljs-attribute">zhon</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">2.1</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">zipp</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-number">3.23</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="安装模型"><a href="#安装模型" class="headerlink" title="安装模型"></a>安装模型</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> -p ckpt<br><span class="hljs-comment"># 从ModelScope下载模型</span><br>pip install -U modelscope<br>modelscope download --model ZhipuAI/GLM-TTS --local_dir ckpt<br></code></pre></td></tr></table></figure>
+
+<h2 id="启动webui-1"><a href="#启动webui-1" class="headerlink" title="启动webui"></a>启动webui</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">python -m tools.gradio_app<br></code></pre></td></tr></table></figure>
+<p>成功之后会提示网页地址，应该是<code>0.0.0.0:8048</code><br>使用方法类似CosyVoice2，不过只有Zero-shot text-to-speech generation模式，没有预训练音色。<br>由于GLM-TTS参数量较大（1.5B），生成速度较CosyVoice慢很多，不过主观感受较CosyVoice好一些。可以自行尝试选择。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%BB%99%E8%87%AA%E5%B7%B1%E5%86%99%E7%9A%84%E6%95%99%E7%A8%8B/" class="category-chain-item">给自己写的教程</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+      
+        <a href="/tags/TTS/" class="print-no-link">#TTS</a>
+      
+        <a href="/tags/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/" class="print-no-link">#本地部署</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>本地部署 CosyVoice 与 GLM-TTS 语音大模型实战指南</div>
+      <div>https://nekonya.one/2026/01/12/本地部署CosyVoice与GLM-TTS/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Guawazi233</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/04/22/%E5%B0%86%E9%B8%A3%E6%BD%AEbot%E5%85%A8%E9%83%A8%E4%B8%A2%E5%88%B0docker%E4%B8%AD%E8%BF%90%E8%A1%8C/" title="将鸣潮bot全部丢到docker中运行">
+                        <span class="hidden-mobile">将鸣潮bot全部丢到docker中运行</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.css')
+      Fluid.utils.createScript('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline.nekonya.one","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener" title="Hexo Official Web"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener" title="Fluid 主题"><span>Fluid</span></a> <i class="iconfont icon-love"></i> <a href="https://umami.nekonya.one/share/dHm6gZpU8oGpFoz9/nekonya.one" target="_blank" rel="nofollow noopener" title="本站 Umami 统计"><span>Umami</span></a><br> <a href="https://icp.gov.moe/?keyword=20241218" target="_blank">萌ICP备20241218号</a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="umami-site-pv-container" style="display: none">
+        总访问量 
+        <span id="umami-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="umami-site-uv-container" style="display: none">
+        总访客数 
+        <span id="umami-site-uv"></span>
+         人
+      </span>
+    
+    
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="/js/umami-view.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
